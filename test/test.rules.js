@@ -25,10 +25,10 @@ function popSettings(ruleName) {
     });
 }
 
-function executeRule(name, text) {
+function executeRule(name, text, props) {
     const rules = t._rules;
 
-    t._lang = lang;
+    t._lang = getLang(name, props);
     rules.forEach(function(f) {
         if (f.name === name) {
             text = f.handler.call(t, text, t._settings[f.name]);
@@ -105,31 +105,39 @@ describe('rules, double execute', function() {
 });
 
 describe('common specific tests', function() {
-    it('enable common/html/stripTags', function() {
-        const tp = new Typograf();
-        tp.enable('common/html/stripTags');
+    function check(data) {
+        const tp = new Typograf({enable: data.enable});
 
-        const tagTests = [
-            ['<p align="center">Hello world!</p> <a href="/">Hello world!</a>\n\n<pre>Hello world!</pre>',
-            'Hello world! Hello world!\n\nHello world!'],
-            ['<p align="center" Hello world!</p>', '']
-        ];
-
-        tagTests.forEach(function(item) {
+        data.tests.forEach(function(item) {
             assert.equal(tp.execute(item[0]), item[1]);
+        });
+    }
+
+    it('enable common/html/stripTags', function() {
+        check({
+            enable: 'common/html/stripTags',
+            tests: [
+                [
+                    '<p align="center">Hello world!</p> <a href="/">Hello world!</a>\n\n<pre>Hello world!</pre>',
+                    'Hello world! Hello world!\n\nHello world!'
+                ],
+                [
+                    '<p align="center" Hello world!</p>',
+                    ''
+                ]
+            ]
         });
     });
 
     it('should enable common/html/escape', function() {
-        const tp = new Typograf({enable: 'common/html/escape'});
-
-        const escapingTests = [
-            ['<p align="center">\nHello world!\n</p>',
-            '&lt;p align=&quot;center&quot;&gt;\nHello world!\n&lt;&#x2F;p&gt;']
-        ];
-
-        escapingTests.forEach(function(item) {
-            assert.equal(tp.execute(item[0]), item[1]);
+        check({
+            enable: 'common/html/escape',
+            tests: [
+                [
+                    '<p align="center">\nHello world!\n</p>',
+                    '&lt;p align=&quot;center&quot;&gt;\nHello world!\n&lt;&#x2F;p&gt;'
+                ]
+            ]
         });
     });
 });
@@ -157,7 +165,8 @@ describe('russian specific tests', function() {
         });
 
         quoteTests.forEach(function(item) {
-            assert.equal(executeRule(name, item[0]), item[1]);
+            const [before, after] = item;
+            assert.equal(executeRule(name, before, {lang: 'ru'}), after);
         });
 
          popSettings(name);

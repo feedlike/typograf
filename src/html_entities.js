@@ -1,4 +1,4 @@
-var HtmlEntities = {
+Typograf.HtmlEntities = {
     init: function() {
         // http://www.w3.org/TR/html4/sgml/entities
         var visibleEntities = [
@@ -259,11 +259,17 @@ var HtmlEntities = {
 
         this._entities = this._prepareEntities([].concat(visibleEntities, invisibleEntities));
 
-        this._entitiesByName = this._entities.reduce(function(acc, entity) {
-            acc[entity.name] = entity;
+        this._entitiesByName = {};
+        this._entitiesByNameEntity = {};
+        this._entitiesByDigitEntity = {};
+        this._entitiesByUtf = {};
 
-            return acc;
-        }, {});
+        this._entities.forEach(function(entity) {
+            this._entitiesByName[entity.name] = entity;
+            this._entitiesByNameEntity[entity.nameEntity] = entity;
+            this._entitiesByDigitEntity[entity.digitEntity] = entity;
+            this._entitiesByUtf[entity.utf] = entity;
+        }, this);
 
         this._invisibleEntities = this._prepareEntities(invisibleEntities);
     },
@@ -334,6 +340,30 @@ var HtmlEntities = {
 
         return text;
     },
+    /**
+     * Get a entity by utf using the type.
+     *
+     * @param {string} symbol
+     * @param {string} [type]
+     * @returns {string}
+     */
+    getByUtf: function(symbol, type) {
+        var result = '';
+
+        switch (type) {
+            case 'digit':
+                result = this._entitiesByDigitEntity[symbol];
+                break;
+            case 'name':
+                result = this._entitiesByNameEntity[symbol];
+                break;
+            default:
+                result = symbol;
+                break;
+        }
+
+        return result;
+    },
     _prepareEntities: function(entities) {
         var result = [];
 
@@ -376,7 +406,7 @@ var HtmlEntities = {
     }
 };
 
-HtmlEntities.init();
+Typograf.HtmlEntities.init();
 
 /**
  * @typedef HtmlEntity

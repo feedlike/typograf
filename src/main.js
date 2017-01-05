@@ -186,7 +186,7 @@ Typograf.prototype = {
 
         text = this._executeRules(text, 'hide-safe-tags');
 
-        text = HtmlEntities.toUtf(text);
+        text = Typograf.HtmlEntities.toUtf(text);
 
         if (this._prefs.live) { text = Typograf._replaceNbsp(text); }
 
@@ -194,7 +194,7 @@ Typograf.prototype = {
 
         text = this._executeRules(text);
 
-        text = HtmlEntities.restore(text, prefs.htmlEntity || this._prefs.htmlEntity || {});
+        text = Typograf.HtmlEntities.restore(text, prefs.htmlEntity || this._prefs.htmlEntity || {});
 
         text = this._executeRules(text, 'html-entities');
 

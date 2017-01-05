@@ -34,7 +34,7 @@ const ruTests = [
     ],
     [
         '<a href="http://www.professionalconsulting.ru/blog/realcms/">"CMS на самом деле"</a>',
-        '<a href="http://www.professionalconsulting.ru/blog/realcms/">«CMS на\u00A0самом деле»</a>'
+        '«<a href="http://www.professionalconsulting.ru/blog/realcms/">CMS на\u00A0самом деле</a>»'
     ],
     [
         '<img width="200" height="150" src="/images/cds.jpg" alt="/images/cds.jpg">',
