@@ -8,20 +8,20 @@ const Typograf = require('../build/typograf');
 const lang = 'ru';
 const t = new Typograf({lang: lang});
 
-let _settings;
+let tmpSettings;
 
 function pushSettings(ruleName, settings) {
-    _settings = {};
+    tmpSettings = {};
 
     Object.keys(settings).forEach(function(key) {
-        _settings[key] = t.setting(ruleName, key);
+        tmpSettings[key] = t.setting(ruleName, key);
         t.setting(ruleName, key, settings[key]);
     });
 }
 
 function popSettings(ruleName) {
-    Object.keys(_settings).forEach(function(key) {
-        t.setting(ruleName, key, _settings[key]);
+    Object.keys(tmpSettings).forEach(function(key) {
+        t.setting(ruleName, key, tmpSettings[key]);
     });
 }
 
@@ -50,17 +50,19 @@ function executeInnerRule(name, text) {
     return text;
 }
 
-function getLang(name, item) {
-    return item[2] ? item[2] : name.split(/\//)[0];
+function getLang(name, props) {
+    return props ? props.lang : name.split(/\//)[0];
 }
 
 describe('inner rules', function() {
     innerTests.forEach(function(elem) {
-        const name = elem[0];
+        const [name, items] = elem;
         it(name, function() {
-            elem[1].forEach(function(as) {
+            items.forEach(function(item) {
+                const [before, after] = item;
+
                 t.enable(name);
-                assert.equal(executeInnerRule(name, as[0]), as[1], as[0] + ' → ' + as[1]);
+                assert.equal(executeInnerRule(name, before), after, before + ' → ' + after);
             });
         });
     });
@@ -68,13 +70,14 @@ describe('inner rules', function() {
 
 describe('rules', function() {
     tests.forEach(function(elem) {
-        const name = elem[0];
+        const [name, items, props] = elem;
         it(name, function() {
-            elem[1].forEach(function(as) {
-                const itTypograf = new Typograf(as[2]);
-                itTypograf.disable('*').enable(name);
-                const result = itTypograf.execute(as[0], {lang: getLang(name, as)});
-                assert.equal(result, as[1], as[0] + ' → ' + as[1]);
+            items.forEach(function(item) {
+                const [before, after] = item;
+                const itTypograf = new Typograf({disable: '*', enable: name});
+
+                const result = itTypograf.execute(before, {lang: getLang(name, props)});
+                assert.equal(result, after, before + ' → ' + after);
             });
         });
     });
@@ -82,18 +85,19 @@ describe('rules', function() {
 
 describe('rules, double execute', function() {
     tests.forEach(function(elem) {
-        const name = elem[0];
+        const [name, items, props] = elem;
         it(name, function() {
-            elem[1].forEach(function(as) {
-                const itTypograf = new Typograf(as[2]);
-                itTypograf.disable('*').enable(name);
+            items.forEach(function(item) {
+                const itTypograf = new Typograf({disable: '*', enable: name});
+                const [before, after] = item;
+                const lang = getLang(name, props);
 
-                let result = itTypograf.execute(as[0], {lang: getLang(name, as)});
-                assert.equal(result, as[1], as[0] + ' → ' + as[1]);
+                let result = itTypograf.execute(before, {lang: lang});
+                assert.equal(result, after, before + ' → ' + after);
 
                 if (!itTypograf._getRule(name).disabled) {
-                    result = itTypograf.execute(result, {lang: getLang(name, as)});
-                    assert.equal(result, as[1], as[0] + ' → ' + as[1]);
+                    result = itTypograf.execute(result, {lang: lang});
+                    assert.equal(result, after, before + ' → ' + after);
                 }
             });
         });
@@ -111,29 +115,28 @@ describe('common specific tests', function() {
             ['<p align="center" Hello world!</p>', '']
         ];
 
-        tagTests.forEach(function(el) {
-            assert.equal(tp.execute(el[0]), el[1]);
+        tagTests.forEach(function(item) {
+            assert.equal(tp.execute(item[0]), item[1]);
         });
     });
 
     it('should enable common/html/escape', function() {
-        const tp = new Typograf();
-        tp.enable('common/html/escape');
+        const tp = new Typograf({enable: 'common/html/escape'});
 
-        const escapeTests = [
+        const escapingTests = [
             ['<p align="center">\nHello world!\n</p>',
             '&lt;p align=&quot;center&quot;&gt;\nHello world!\n&lt;&#x2F;p&gt;']
         ];
 
-        escapeTests.forEach(function(el) {
-            assert.equal(tp.execute(el[0]), el[1]);
+        escapingTests.forEach(function(item) {
+            assert.equal(tp.execute(item[0]), item[1]);
         });
     });
 });
 
 describe('russian specific tests', function() {
     it('quotes lquote = lquote2 and rquote = rquote2', function() {
-        const quotTests = [
+        const quoteTests = [
             ['"Триллер “Закрытая школа” на СТС"', '«Триллер «Закрытая школа» на СТС»'],
             ['Триллер "Триллер “Закрытая школа” на СТС" Триллер', 'Триллер «Триллер «Закрытая школа» на СТС» Триллер'],
             ['"“Закрытая школа” на СТС"', '«Закрытая школа» на СТС»'],
@@ -142,18 +145,22 @@ describe('russian specific tests', function() {
             ['Триллер "Триллер “Закрытая школа" Триллер', 'Триллер «Триллер «Закрытая школа» Триллер']
         ];
 
-        pushSettings('ru/punctuation/quote', {
-            lquote: '«',
-            rquote: '»',
-            lquote2: '«',
-            rquote2: '»'
+        const name = 'common/punctuation/quote';
+
+        pushSettings(name, {
+            ru: {
+                lquote: '«',
+                rquote: '»',
+                lquote2: '«',
+                rquote2: '»'
+            }
         });
 
-        quotTests.forEach(function(el) {
-            assert.equal(executeRule('ru/punctuation/quote', el[0]), el[1]);
+        quoteTests.forEach(function(item) {
+            assert.equal(executeRule(name, item[0]), item[1]);
         });
 
-        popSettings('ru/quote');
+         popSettings(name);
     });
 
     it('ru/optalign', function() {
@@ -181,22 +188,21 @@ describe('russian specific tests', function() {
                 '<html><head><title>Большие бинари в моем Rust?<span class="typograf-oa-sp-lbracket"> </span><span class="typograf-oa-lbracket">(</span>Why is a Rust executable large?) | Ржавый ящик</title></head><body></body></html>',
                 '<html><head><title>Большие бинари в\u00A0моем Rust? (Why is\u00A0a\u00A0Rust executable large?) | Ржавый ящик</title></head><body></body></html>'
             ]
-        ].forEach(function(el) {
-            assert.equal(tp.execute(el[0]), el[1]);
+        ].forEach(function(item) {
+            assert.equal(tp.execute(item[0]), item[1]);
         });
     });
 
     it('should disable ru/optalign', function() {
-        const tp = new Typograf({lang: 'ru'});
-        tp.disable('*');
+        const tp = new Typograf({lang: 'ru', disable: '*'});
 
         [
             '<span class="typograf-oa-sp-lquot"> </span>',
             '<span class="typograf-oa-lquot">«</span>',
             '<span class="typograf-oa-comma">,</span>',
             '<span class="typograf-oa-sp-lbracket"> </span>'
-        ].forEach(function(el) {
-            assert.equal(tp.execute(el), el);
+        ].forEach(function(item) {
+            assert.equal(tp.execute(item), item);
         });
     });
 });

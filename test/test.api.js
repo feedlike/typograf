@@ -7,15 +7,15 @@ const t = new Typograf();
 
 describe('API', function() {
     it('should disable rule', function() {
-        t.disable('ru/punctuation/quote');
-        assert.ok(t.disabled('ru/punctuation/quote'));
+        t.disable('common/punctuation/quote');
+        assert.ok(t.disabled('common/punctuation/quote'));
 
-        t.enable('ru/punctuation/quote');
+        t.enable('common/punctuation/quote');
     });
 
     it('should disable rule from constructor', function() {
         const typograf = new Typograf({lang: 'ru', disable: '*'});
-        assert.ok(typograf.disabled('ru/punctuation/quote'));
+        assert.ok(typograf.disabled('common/punctuation/quote'));
     });
 
     it('should set/get data', function() {
