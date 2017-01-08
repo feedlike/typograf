@@ -3,7 +3,6 @@
  * @param {Object} [prefs]
  * @param {string} [prefs.lang] Language rules
  * @param {string} [prefs.lineEnding] Line ending. 'LF' (Unix), 'CR' (Mac) or 'CRLF' (Windows). Default: 'LF'.
- * @param {string} [prefs.mode] - Deprecated. Use prefs.htmlEntity
  * @param {HtmlEntity} [prefs.htmlEntity]
  * @param {boolean} [prefs.live] Live mode
  * @param {string|string[]} [prefs.enable] Enable rules
@@ -160,8 +159,7 @@ Typograf.prototype = {
      * @param {string} text
      * @param {Object} [prefs]
      * @param {string} [prefs.lang] Language rules
-     * @param {string} [prefs.mode] - Deprecated. Use prefs.htmlEntity
-     * @param {HtmlEntity} [prefs.htmlEntity] Type HTML entities
+     * @param {HtmlEntity} [prefs.htmlEntity] Type of HTML entities
      * @param {string} [prefs.lineEnding] Line ending. 'LF' (Unix), 'CR' (Mac) or 'CRLF' (Windows). Default: 'LF'.
      * @return {string}
      */
@@ -172,11 +170,7 @@ Typograf.prototype = {
 
         prefs = prefs || {};
 
-        var that = this,
-            htmlEntityParam = this._prepareHtmlEntityParam(
-                prefs.mode || this._prefs.mode,
-                prefs.htmlEntity || this._prefs.htmlEntity
-            );
+        var that = this;
 
         this._lang = prefs.lang || this._prefs.lang || 'common';
 
@@ -200,9 +194,9 @@ Typograf.prototype = {
 
         text = this._executeRules(text);
 
-        text = HtmlEntities.restore(text, htmlEntityParam);
+        text = HtmlEntities.restore(text, prefs.htmlEntity || this._prefs.htmlEntity || {});
 
-        text = this._executeRules(text, 'entity');
+        text = this._executeRules(text, 'html-entities');
 
         text = this._safeTags.show(text, function(t, group) {
             return that._executeRules(t, 'show-safe-tags-' + group);
@@ -494,8 +488,5 @@ Typograf.prototype = {
         });
 
         return rule;
-    },
-    _prepareHtmlEntityParam: function(oldFormat, newFormat) {
-        return oldFormat ? {type: oldFormat} : newFormat || {};
     }
 };

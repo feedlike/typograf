@@ -15,16 +15,6 @@ describe('HTML Entities', function() {
         assert.equal(tDigit.execute('1&nbsp;2'), '1&#160;2');
     });
 
-    it('should get entities as name or digit for mode', function() {
-        const tName = new Typograf({mode: 'name'});
-        assert.equal(tName.execute('1\u00A02'), '1&nbsp;2');
-        assert.equal(tName.execute('1&#160;2'), '1&nbsp;2');
-
-        const tDigit = new Typograf({mode: 'digit'});
-        assert.equal(tDigit.execute('1\u00A02'), '1&#160;2');
-        assert.equal(tDigit.execute('1&nbsp;2'), '1&#160;2');
-    });
-
     it('should get entities as name or digit with method "execute"', function() {
         const tName = new Typograf();
         const nameParams = {htmlEntity: {type: 'name'}};
