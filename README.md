@@ -40,7 +40,7 @@ npm install typograf
 ```HTML
 <script src="./node_modules/typograf/dist/typograf.min.js"></script>
 <script>
-    var tp = new Typograf({lang: 'ru'});
+    var tp = new Typograf({locale: 'ru'});
     alert(tp.execute('     Мир - мой мир!!      '));
 </script>
 ```
@@ -52,7 +52,7 @@ npm install typograf
 
 ```js
 const Typograf = require('typograf');
-const tp = new Typograf({lang: 'ru'});
+const tp = new Typograf({locale: 'ru'});
 
 console.log(tp.execute(' Мир - мой мир!!   '));
 ```
@@ -73,7 +73,7 @@ console.log(tp.execute(' Мир - мой мир!!   '));
 Для включения необходимо подключить правила:
 ```js
 var Typograf = require('typograf'),
-    tp = new Typograf({lang: 'ru'});
+    tp = new Typograf({locale: 'ru'});
 
 tp.enable('ru/optalign/*');
 console.log(tp.execute('"Мир"'));
@@ -87,7 +87,7 @@ console.log(tp.execute('"Мир"'));
 
 ### Включить или отключить правила
 ```js
-var tp = new Typograf({lang: 'ru'});
+var tp = new Typograf({locale: 'ru'});
 tp.enable('ru/money/ruble'); // Включить правило
 tp.enable('ru/money/*'); // Включить все правила в группе
 tp.enable('*'); // Включить все правила
@@ -99,7 +99,7 @@ tp.disable('*'); // Отключить все правила
 
 ### Изменить настройку у правила
 ```js
-var tp = new Typograf({lang: 'ru'});
+var tp = new Typograf({locale: 'ru'});
 
 // Название правила, название настройки, значение
 
@@ -127,19 +127,19 @@ Typograf.rule({
 ### HTML-сущности
 ```js
 // Режим по умолчанию, HTML-сущности, как UTF-8 символы
-var tp = new Typograf({lang: 'ru'});
+var tp = new Typograf({locale: 'ru'});
 tp.execute('12 кг...'); // 12 кг…
 
 // HTML-сущности в виде имён
 var tpName = new Typograf({
-    lang: 'ru',
+    locale: 'ru',
     htmlEntity: {type: 'name'}
 });
 tpName.execute('12 кг...'); // 12&nbsp;кг&hellip;
 
 // HTML-сущности в виде цифр
 var tpDigit = new Typograf({
-    lang: 'ru',
+    locale: 'ru',
     htmlEntity: {type: 'digit'}
 });
 tpDigit.execute('12 кг...'); // 12&#160;кг&#8230;
@@ -147,7 +147,7 @@ tpDigit.execute('12 кг...'); // 12&#160;кг&#8230;
 // Все HTML-сущности в UTF-8, а невидимые сущности в виде цифр
 // Невидимые сущности — &nbsp; &thinsp; &ensp; &emsp; &shy; &zwnj; &zwj; &lrm; &rlm;
 var tpNameInvisible = new Typograf({
-    lang: 'ru',
+    locale: 'ru',
     htmlEntity: {
         type: 'name',
         onlyInvisible: true
@@ -157,7 +157,7 @@ tpNameInvisible.execute('12 кг...'); // 12&nbsp;кг…
 
 // Все HTML-сущности в UTF-8, а заданные в списке в виде цифр
 var tpDigit = new Typograf({
-    lang: 'ru',
+    locale: 'ru',
     htmlEntity: {
         type: 'digit',
         list: ['nbsp', 'shy', 'mdash', 'ndash']
@@ -170,7 +170,7 @@ tpDigit.execute('12 кг...'); // 12&#160;кг…
 ### Типографика на лету
 Данный live-режим необходим, если текст типографируется на каждый ввод символа в текстовых полях.
 ```js
-var tp = new Typograf({lang: 'ru', live: true});
+var tp = new Typograf({locale: 'ru', live: true});
 ```
 [Подробнее](https://github.com/typograf/jquery-typograf)
 
@@ -181,7 +181,7 @@ var tp = new Typograf({lang: 'ru', live: true});
 
 ### Отключение типографирования в участках текста
 ```js
-var tp = new Typograf({lang: 'ru'});
+var tp = new Typograf({locale: 'ru'});
 
 // Отключить типографирование внутри тега <no-typography>
 tp.addSafeTag('<no-typography>', '</no-typography>');

@@ -163,7 +163,7 @@ tests.push([
             'Она буквально влюбила меня в театр.\n«Мы напихиваем в детей ненужное барахло». 5 радикальных тезисов Германа Грефа об образовании'
         ]
     ],
-    {lang: 'ru'}
+    {locale: 'ru'}
 ]);
 
 tests.push([
@@ -181,5 +181,5 @@ tests.push([
             '“I was reading ‘The Economics of the USA’ yesterday,” she replied to me.'
         ]
     ],
-    {lang: 'en'}
+    {locale: 'en'}
 ]);

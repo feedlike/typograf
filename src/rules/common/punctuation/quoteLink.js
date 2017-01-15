@@ -2,7 +2,7 @@ Typograf.rule({
     name: 'common/punctuation/quoteLink',
     queue: 'show-safe-tags-html',
     handler: function(text) {
-        var quotes = this.setting('common/punctuation/quote', this._lang);
+        var quotes = this.setting('common/punctuation/quote', this._locale);
 
         if (!quotes) { return text; }
         var entities = Typograf.HtmlEntities,

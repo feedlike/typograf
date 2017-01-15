@@ -33,5 +33,5 @@ tests.push([
             '"Справка\u00A009"'
         ]
     ],
-    {lang: 'ru'}
+    {locale: 'ru'}
 ]);

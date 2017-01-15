@@ -3,16 +3,16 @@
 Typograf.rule({
     name: 'common/punctuation/quote',
     handler: function(text, commonSettings) {
-        var lang = this._lang,
-            langSettings = commonSettings[lang];
+        var locale = this._locale,
+            localeSettings = commonSettings[locale];
 
-        if (!langSettings) { return text; }
+        if (!localeSettings) { return text; }
 
-        var lquote = langSettings.lquote,
-            rquote = langSettings.rquote;
+        var lquote = localeSettings.lquote,
+            rquote = localeSettings.rquote;
 
-        text = this._setQuotes(text, langSettings);
-        if (lang === 'ru' && lquote === langSettings.lquote2 && rquote === langSettings.rquote2) {
+        text = this._setQuotes(text, localeSettings);
+        if (locale === 'ru' && lquote === localeSettings.lquote2 && rquote === localeSettings.rquote2) {
             text = text
                 // ««Энергия» Синергия» -> «Энергия» Синергия»
                 .replace(new RegExp(lquote + lquote, 'g'), lquote)

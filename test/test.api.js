@@ -14,7 +14,7 @@ describe('API', function() {
     });
 
     it('should disable rule from constructor', function() {
-        const typograf = new Typograf({lang: 'ru', disable: '*'});
+        const typograf = new Typograf({locale: 'ru', disable: '*'});
         assert.ok(typograf.disabled('common/punctuation/quote'));
     });
 
@@ -28,13 +28,13 @@ describe('API', function() {
         Typograf.data('prop', undefined);
     });
 
-    it('should get data with lang', function() {
-        const typograf = new Typograf({lang: 'ru'});
+    it('should get data with locale', function() {
+        const typograf = new Typograf({locale: 'ru'});
         assert.equal(typograf.data('ru/l'), Typograf.data('ru/l'));
     });
 
-    it('should get data without lang', function() {
-        const typograf = new Typograf({lang: 'ru'});
+    it('should get data without locale', function() {
+        const typograf = new Typograf({locale: 'ru'});
         assert.equal(typograf.data('l'), Typograf.data('ru/l'));
     });
 
@@ -61,7 +61,7 @@ describe('API', function() {
     });
 
     it('should enable rule from constructor', function() {
-        const typograf = new Typograf({lang: 'ru', enable: '*'});
+        const typograf = new Typograf({locale: 'ru', enable: '*'});
         assert.ok(typograf.enabled('common/html/p'));
     });
 

@@ -37,7 +37,7 @@ tests.push([
             'Сказка "О\u00A0царе Салтане"\nБыль "О\u00A0солдате'
         ]
     ],
-    {lang: 'ru'}
+    {locale: 'ru'}
 ]);
 
 tests.push([
@@ -47,5 +47,5 @@ tests.push([
             'Whenever I\'m down\n\I\u00A0call on\u00A0you my\u00A0friend\nA\u00A0helping hand you lend\nIn\u00A0my\u00A0time of\u00A0need\nWhenever I\'m down\nI\u00A0call on\u00A0you my\u00A0friend',
         ]
     ],
-    {lang: 'en'}
+    {locale: 'en'}
 ]);

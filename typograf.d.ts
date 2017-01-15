@@ -9,7 +9,7 @@ declare namespace typograf {
 	}
 
 	interface Typograf {
-		execute(text: string, prefs?: {htmlEntity?: HtmlEntity, lang?: string, lineEnding: LineEnding, mode?: Mode}): string;
+		execute(text: string, prefs?: {htmlEntity?: HtmlEntity, locale?: string, lineEnding: LineEnding, mode?: Mode}): string;
 		enable(rule: string | string[]): Typograf;
 		disable(rule: string | string[]): Typograf;
 		enabled(rule: string): boolean;
@@ -19,7 +19,7 @@ declare namespace typograf {
 	}
 
 	interface Options {
-		lang: string;
+		locale: string;
 		htmlEntity?: HtmlEntity;
 		lineEnding?: LineEnding;
 		mode?: Mode;

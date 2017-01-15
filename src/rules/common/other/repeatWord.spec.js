@@ -8,7 +8,7 @@ tests.push([
         ['Это то, без чего мне не жить.', 'Это то, без чего мне не жить.'],
         ['"то то"', '"то"']
     ],
-    {lang: 'ru'}
+    {locale: 'ru'}
 ]);
 
 tests.push([
@@ -16,6 +16,6 @@ tests.push([
         ['Hello world world!', 'Hello world!'],
         ['world world', 'world']
     ],
-    {lang: 'en'}
+    {locale: 'en'}
 ]);
 

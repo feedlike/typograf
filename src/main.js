@@ -1,7 +1,7 @@
 /**
  * @constructor
  * @param {Object} [prefs]
- * @param {string} [prefs.lang] Language rules
+ * @param {string} [prefs.locale] Locale
  * @param {string} [prefs.lineEnding] Line ending. 'LF' (Unix), 'CR' (Mac) or 'CRLF' (Windows). Default: 'LF'.
  * @param {HtmlEntity} [prefs.htmlEntity]
  * @param {boolean} [prefs.live] Live mode
@@ -55,7 +55,7 @@ Typograf.rule = function(rule) {
     var parts = rule.name.split('/');
 
     rule._enabled = rule.disabled === true ? false : true;
-    rule._lang = parts[0];
+    rule._locale = parts[0];
     rule._group = parts[1];
     rule._name = parts[2];
 
@@ -72,7 +72,7 @@ Typograf.rule = function(rule) {
 
 Typograf._reUrl = new RegExp('(https?|file|ftp)://([a-zA-Z0-9\/+-=%&:_.~?]+[a-zA-Z0-9#+]*)', 'g');
 
-Typograf._langs = ['en', 'ru'];
+Typograf._locales = ['en', 'ru'];
 
 Typograf._setIndex = function(rule) {
     var index = rule.index,
@@ -101,7 +101,7 @@ Typograf._setIndex = function(rule) {
 Typograf.innerRule = function(rule) {
     Typograf.prototype._innerRules.push(rule);
 
-    rule._lang = rule.name.split('/')[0];
+    rule._locale = rule.name.split('/')[0];
 
     return this;
 };
@@ -158,7 +158,7 @@ Typograf.prototype = {
      *
      * @param {string} text
      * @param {Object} [prefs]
-     * @param {string} [prefs.lang] Language rules
+     * @param {string} [prefs.locale] Locale
      * @param {HtmlEntity} [prefs.htmlEntity] Type of HTML entities
      * @param {string} [prefs.lineEnding] Line ending. 'LF' (Unix), 'CR' (Mac) or 'CRLF' (Windows). Default: 'LF'.
      * @return {string}
@@ -172,7 +172,7 @@ Typograf.prototype = {
 
         var that = this;
 
-        this._lang = prefs.lang || this._prefs.lang || 'common';
+        this._locale = prefs.locale || this._prefs.locale || 'common';
 
         text = this._removeCR(text);
 
@@ -204,7 +204,7 @@ Typograf.prototype = {
 
         text = this._executeRules(text, 'end');
 
-        this._lang = null;
+        this._locale = null;
         this._isHTML = null;
 
         return this._fixLineEnding(text, prefs.lineEnding || this._prefs.lineEnding);
@@ -267,7 +267,7 @@ Typograf.prototype = {
      * Add safe tag.
      *
      * @example
-     * // var t = new Typograf({lang: 'ru'});
+     * // var t = new Typograf({locale: 'ru'});
      * // t.addSafeTag('<mytag>', '</mytag>');
      * // t.addSafeTag('<mytag>', '</mytag>', '.*?');
      * // t.addSafeTag(/<mytag>.*?</mytag>/gi);
@@ -291,12 +291,12 @@ Typograf.prototype = {
      * @return {*}
      */
     data: function(key) {
-        var lang = '';
+        var locale = '';
         if (key.search('/') === -1) {
-            lang = (this._lang || this._prefs.lang) + '/';
+            locale = (this._locale || this._prefs.locale) + '/';
         }
 
-        return Typograf.data(lang + key);
+        return Typograf.data(locale + key);
     },
     _executeRules: function(text, queue) {
         queue = queue || 'default';
@@ -315,14 +315,14 @@ Typograf.prototype = {
         return text;
     },
     _ruleIterator: function(text, rule) {
-        var rlang = rule._lang,
+        var rlocale = rule._locale,
             live = this._prefs.live;
 
         if ((live === true && rule.live === false) || (live === false && rule.live === true)) {
             return text;
         }
 
-        if ((rlang === 'common' || rlang === this._lang) && this.enabled(rule.name)) {
+        if ((rlocale === 'common' || rlocale === this._locale) && this.enabled(rule.name)) {
             this._onBeforeRule && this._onBeforeRule(rule.name, text);
             text = rule.handler.call(this, text, this._settings[rule.name]);
             this._onAfterRule && this._onAfterRule(rule.name, text);

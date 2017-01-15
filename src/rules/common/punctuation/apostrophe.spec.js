@@ -29,7 +29,7 @@ tests.push([
             'Кот-д’Ор, Кот-д’Армор, Л’Умо, Пон-л’Эвек, Л’Иль-сюр-ла-Сорг,  Морро-д’Оро, Морро-д’Альба, Л’Алькерия-д’Аснар'
         ]
     ],
-    {lang: 'ru'}
+    {locale: 'ru'}
 ]);
 
 tests.push([
@@ -47,5 +47,5 @@ tests.push([
             'Katie’s and Erin’s houses are beautiful.'
         ]
     ],
-    {lang: 'en'}
+    {locale: 'en'}
 ]);

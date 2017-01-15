@@ -10,7 +10,7 @@ module.exports = {
                 it(item[0], function() {
                     const prefs = item[2] || {};
                     const tp = new Typograf({
-                        lang: 'ru',
+                        locale: 'ru',
                         enable: prefs.enable,
                         disable: prefs.disable
                     });
@@ -26,7 +26,7 @@ module.exports = {
                 it(item[0], function() {
                     const prefs = item[2] || {};
                     const tp = new Typograf({
-                        lang: 'ru',
+                        locale: 'ru',
                         enable: prefs.enable,
                         disable: prefs.disable
                     });

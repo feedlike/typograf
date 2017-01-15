@@ -5,8 +5,8 @@ const r = require('../build/rules');
 const tests = r.tests;
 const innerTests = r.innerTests;
 const Typograf = require('../build/typograf');
-const lang = 'ru';
-const t = new Typograf({lang: lang});
+const locale = 'ru';
+const t = new Typograf({locale: locale});
 
 let tmpSettings;
 
@@ -28,7 +28,7 @@ function popSettings(ruleName) {
 function executeRule(name, text, props) {
     const rules = t._rules;
 
-    t._lang = getLang(name, props);
+    t._locale = getLocale(name, props);
     rules.forEach(function(f) {
         if (f.name === name) {
             text = f.handler.call(t, text, t._settings[f.name]);
@@ -50,8 +50,8 @@ function executeInnerRule(name, text) {
     return text;
 }
 
-function getLang(name, props) {
-    return props ? props.lang : name.split(/\//)[0];
+function getLocale(name, props) {
+    return props ? props.locale : name.split(/\//)[0];
 }
 
 describe('inner rules', function() {
@@ -76,7 +76,7 @@ describe('rules', function() {
                 const [before, after] = item;
                 const itTypograf = new Typograf({disable: '*', enable: name});
 
-                const result = itTypograf.execute(before, {lang: getLang(name, props)});
+                const result = itTypograf.execute(before, {locale: getLocale(name, props)});
                 assert.equal(result, after, before + ' → ' + after);
             });
         });
@@ -90,13 +90,13 @@ describe('rules, double execute', function() {
             items.forEach(function(item) {
                 const itTypograf = new Typograf({disable: '*', enable: name});
                 const [before, after] = item;
-                const lang = getLang(name, props);
+                const locale = getLocale(name, props);
 
-                let result = itTypograf.execute(before, {lang: lang});
+                let result = itTypograf.execute(before, {locale: locale});
                 assert.equal(result, after, before + ' → ' + after);
 
                 if (!itTypograf._getRule(name).disabled) {
-                    result = itTypograf.execute(result, {lang: lang});
+                    result = itTypograf.execute(result, {locale: locale});
                     assert.equal(result, after, before + ' → ' + after);
                 }
             });
@@ -166,14 +166,14 @@ describe('russian specific tests', function() {
 
         quoteTests.forEach(function(item) {
             const [before, after] = item;
-            assert.equal(executeRule(name, before, {lang: 'ru'}), after);
+            assert.equal(executeRule(name, before, {locale: 'ru'}), after);
         });
 
          popSettings(name);
     });
 
     it('ru/optalign', function() {
-        const tp = new Typograf({lang: 'ru'});
+        const tp = new Typograf({locale: 'ru'});
         tp.enable('ru/optalign/*');
 
         [
@@ -203,7 +203,7 @@ describe('russian specific tests', function() {
     });
 
     it('should disable ru/optalign', function() {
-        const tp = new Typograf({lang: 'ru', disable: '*'});
+        const tp = new Typograf({locale: 'ru', disable: '*'});
 
         [
             '<span class="typograf-oa-sp-lquot"> </span>',
