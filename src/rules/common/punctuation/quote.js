@@ -1,5 +1,3 @@
-(function() {
-
 Typograf.rule({
     name: 'common/punctuation/quote',
     handler: function(text, commonSettings) {
@@ -8,11 +6,12 @@ Typograf.rule({
 
         if (!localeSettings) { return text; }
 
-        var lquote = localeSettings.lquote,
-            rquote = localeSettings.rquote;
+        var lquote = localeSettings.left[0],
+            rquote = localeSettings.right[0],
+            lquote2 = localeSettings.left[1] || lquote;
 
         text = this._setQuotes(text, localeSettings);
-        if (locale === 'ru' && lquote === localeSettings.lquote2 && rquote === localeSettings.rquote2) {
+        if (localeSettings.removeDuplicateQuotes && lquote === lquote2) {
             text = text
                 // ««Энергия» Синергия» -> «Энергия» Синергия»
                 .replace(new RegExp(lquote + lquote, 'g'), lquote)
@@ -22,31 +21,25 @@ Typograf.rule({
 
         return text;
     },
-    settings: {
-        ru: {
-            lquote: '«',
-            rquote: '»',
-            lquote2: '„',
-            rquote2: '“',
-            lquote3: '‚',
-            rquote3: '‘'
-        },
-        en: {
-            lquote: '“',
-            rquote: '”',
-            lquote2: '‘',
-            rquote2: '’'
-        }
+    settings: function() {
+        var settings = {};
+
+        Typograf.getLocales().forEach(function(locale) {
+            settings[locale] = Typograf.deepCopy(Typograf.data(locale + '/quote'));
+        });
+
+        return settings;
     }
 });
 
 Typograf.prototype._setQuotes = function(text, settings) {
-    var letters = this.data('l') + '\u0301\\d',
+    var ch = this.data('char'),
+        CH = ch.toUpperCase(),
+        letters = ch + '\u0301\\d',
         privateLabel = Typograf._privateLabel,
-        lquote = settings.lquote,
-        rquote = settings.rquote,
-        lquote2 = settings.lquote2,
-        rquote2 = settings.rquote2,
+        lquote = settings.left[0],
+        rquote = settings.right[0],
+        lquote2 = settings.left[1] || lquote,
         quotes = '[' + Typograf.data('common/quote') + ']',
         phrase = '[' + letters + ')!?.:;#*,…]*?',
         reL = new RegExp('"([' + letters + '])', 'gi'),
@@ -56,7 +49,7 @@ Typograf.prototype._setQuotes = function(text, settings) {
         reOpeningTag = new RegExp('(^|\\s)' + quotes + privateLabel, 'g'),
         reClosingTag = new RegExp(privateLabel + quotes + '([\\s!?.:;#*,]|$)', 'g'),
         count = 0,
-        symbols = this.data('lLd');
+        symbols = ch + CH + '\\d';
 
     text = text
         // Hide incorrect quotes.
@@ -71,7 +64,7 @@ Typograf.prototype._setQuotes = function(text, settings) {
         .replace(reClosingTag, privateLabel + rquote + '$1') // Tag and closing quote
         .replace(reFirstQuote, '$1' + lquote);
 
-    if (lquote2 && rquote2 && count % 2 === 0) {
+    if (lquote !== lquote2 && count % 2 === 0) {
         text = this._setInnerQuotes(text, settings);
     }
 
@@ -80,25 +73,20 @@ Typograf.prototype._setQuotes = function(text, settings) {
 };
 
 Typograf.prototype._setInnerQuotes = function(text, settings) {
-    var openingQuotes = [settings.lquote],
-        closingQuotes = [settings.rquote];
+    var leftQuotes = [],
+        rightQuotes = [];
 
-    if (settings.lquote2 && settings.rquote2) {
-        openingQuotes.push(settings.lquote2);
-        closingQuotes.push(settings.rquote2);
-
-        if (settings.lquote3 && settings.rquote3) {
-            openingQuotes.push(settings.lquote3);
-            closingQuotes.push(settings.rquote3);
-        }
+    for (var k = 0; k < settings.left.length; k++) {
+        leftQuotes.push(settings.left[k]);
+        rightQuotes.push(settings.right[k]);
     }
 
-    var lquote = settings.lquote,
-        rquote = settings.rquote,
+    var lquote = settings.left[0],
+        rquote = settings.right[0],
         bufText = new Array(text.length),
         privateQuote = Typograf._privateQuote,
         minLevel = -1,
-        maxLevel = openingQuotes.length - 1,
+        maxLevel = leftQuotes.length - 1,
         level = minLevel;
 
     for (var i = 0, len = text.length; i < len; i++) {
@@ -109,13 +97,13 @@ Typograf.prototype._setInnerQuotes = function(text, settings) {
             if (level > maxLevel) {
                 level = maxLevel;
             }
-            bufText.push(openingQuotes[level]);
+            bufText.push(leftQuotes[level]);
         } else if (letter === rquote) {
             if (level <= minLevel) {
                 level = 0;
-                bufText.push(openingQuotes[level]);
+                bufText.push(leftQuotes[level]);
             } else {
-                bufText.push(closingQuotes[level]);
+                bufText.push(rightQuotes[level]);
                 level--;
                 if (level < minLevel) {
                     level = minLevel;
@@ -132,5 +120,3 @@ Typograf.prototype._setInnerQuotes = function(text, settings) {
 
     return bufText.join('');
 };
-
-})();

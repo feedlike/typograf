@@ -3,7 +3,7 @@ Typograf.rule({
     handler: function(text, settings) {
         var punc = '[;:,.?! \n' + this.data('common/quote') + ']';
         var re = new RegExp('(' + punc + '|^)' + 
-            '([' + this.data('l') + ']{' + settings.min + ',}) ' + 
+            '([' + this.data('char') + ']{' + settings.min + ',}) ' + 
             '\\2(' + punc + '|$)', 'gi');
 
         return text.replace(re, '$1$2$3');

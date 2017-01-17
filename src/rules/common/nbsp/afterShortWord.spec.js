@@ -47,5 +47,5 @@ tests.push([
             'Whenever I\'m down\n\I\u00A0call on\u00A0you my\u00A0friend\nA\u00A0helping hand you lend\nIn\u00A0my\u00A0time of\u00A0need\nWhenever I\'m down\nI\u00A0call on\u00A0you my\u00A0friend',
         ]
     ],
-    {locale: 'en'}
+    {locale: 'en-US'}
 ]);

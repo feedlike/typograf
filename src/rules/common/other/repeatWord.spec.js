@@ -16,6 +16,6 @@ tests.push([
         ['Hello world world!', 'Hello world!'],
         ['world world', 'world']
     ],
-    {locale: 'en'}
+    {locale: 'en-US'}
 ]);
 

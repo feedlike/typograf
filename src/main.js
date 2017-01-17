@@ -59,6 +59,8 @@ Typograf.rule = function(rule) {
     rule._group = parts[1];
     rule._name = parts[2];
 
+    Typograf.addLocale(rule._locale);
+
     Typograf._setIndex(rule);
 
     Typograf.prototype._rules.push(rule);
@@ -71,8 +73,6 @@ Typograf.rule = function(rule) {
 };
 
 Typograf._reUrl = new RegExp('(https?|file|ftp)://([a-zA-Z0-9\/+-=%&:_.~?]+[a-zA-Z0-9#+]*)', 'g');
-
-Typograf._locales = ['en', 'ru'];
 
 Typograf._setIndex = function(rule) {
     var index = rule.index,
@@ -119,16 +119,28 @@ Typograf.data = function(key, value) {
         if (arguments.length === 1) {
             return Typograf._data[key];
         } else {
+            Typograf.addLocale(key);
             Typograf._data[key] = value;
         }
     } else if (typeof key === 'object') {
         Object.keys(key).forEach(function(k) {
+            Typograf.addLocale(k);
             Typograf._data[k] = key[k];
         });
     }
 };
 
 Typograf._data = {};
+
+/**
+ * Get a deep copy of a object.
+ *
+ * @param {*} obj
+ * @return {*}
+ */
+Typograf.deepCopy = function(obj) {
+    return typeof obj === 'object' ? JSON.parse(JSON.stringify(obj)) : obj;
+};
 
 Typograf._sortRules = function() {
     Typograf.prototype._rules.sort(function(a, b) {
@@ -344,12 +356,13 @@ Typograf.prototype = {
     },
     _prepareRule: function(rule) {
         var name = rule.name,
+            t = typeof rule.settings,
             settings = {};
 
-        if (typeof rule.settings === 'object') {
-            Object.keys(rule.settings).forEach(function(key) {
-                settings[key] = rule.settings[key];
-            });
+        if (t === 'object') {
+            settings = Typograf.deepCopy(rule.settings);
+        } else if (t === 'function') {
+            settings = rule.settings(rule);
         }
 
         this._settings[name] = settings;

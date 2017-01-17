@@ -18,6 +18,7 @@ const bodyJs = [
     'src/main.js',
     'src/version.js',
     'src/indexes.js',
+    'src/locale.js',
     'src/safe_tags.js',
     'src/html_entities.js',
     'src/block_elements.js',

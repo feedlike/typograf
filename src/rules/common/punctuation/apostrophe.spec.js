@@ -47,5 +47,5 @@ tests.push([
             'Katie’s and Erin’s houses are beautiful.'
         ]
     ],
-    {locale: 'en'}
+    {locale: 'en-US'}
 ]);

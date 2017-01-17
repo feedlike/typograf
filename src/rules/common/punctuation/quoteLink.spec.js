@@ -13,5 +13,5 @@ tests.push(['common/punctuation/quoteLink', [
             '“<a href="/">Name 1</a>”\n“<a href="/">Name 2</a>”'
         ]
     ],
-    {locale: 'en'}
+    {locale: 'en-US'}
 ]);

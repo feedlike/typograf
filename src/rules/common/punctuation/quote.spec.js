@@ -181,5 +181,5 @@ tests.push([
             '“I was reading ‘The Economics of the USA’ yesterday,” she replied to me.'
         ]
     ],
-    {locale: 'en'}
+    {locale: 'en-US'}
 ]);

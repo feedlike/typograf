@@ -10,8 +10,8 @@ var classNames = [
 Typograf.rule({
     name: name,
     handler: function(text) {
-        var quotes = this.setting('common/punctuation/quote', 'ru'),
-            lquotes = '([' + quotes.lquote + (quotes.lquote2 || '') + '])',
+        var quote = this.setting('common/punctuation/quote', 'ru'),
+            lquotes = '([' + quote.left[0] + (quote.left[1] || '') + '])',
             reNewLine = new RegExp('(^|\n\n|' + Typograf._privateLabel + ')(' + lquotes + ')', 'g'),
             reInside = new RegExp('([^\n' + Typograf._privateLabel + '])([ \u00A0\n])(' + lquotes + ')', 'gi');
 
