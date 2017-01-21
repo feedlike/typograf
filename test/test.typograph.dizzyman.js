@@ -46,5 +46,5 @@ const ruTests = [
     ]*/
 ];
 
-helpers.ruTests('typograph dizzyman', ruTests);
-helpers.ruDoubleTests('typograph dizzyman, double execute', ruTests);
+helpers.test('typograph dizzyman', ruTests, {locale: ['ru', 'en-US']});
+helpers.doubleTest('typograph dizzyman, double execute', ruTests, {locale: ['ru', 'en-US']});

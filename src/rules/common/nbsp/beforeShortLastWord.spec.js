@@ -9,5 +9,5 @@ tests.push([
             'Голубка дряхлая\u00A0моя!'
         ]
     ],
-    {locale: 'ru'}
+    {locale: ['ru', 'en-US']}
 ]);

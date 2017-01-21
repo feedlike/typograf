@@ -306,5 +306,5 @@ const ruTests = [
     ]*/
 ];
 
-helpers.ruTests('typograph basic', ruTests);
-helpers.ruDoubleTests('typograph basic, double execute', ruTests);
+helpers.test('typograph basic', ruTests, {locale: ['ru', 'en-US']});
+helpers.doubleTest('typograph basic, double execute', ruTests, {locale: ['ru', 'en-US']});

@@ -12,6 +12,8 @@ function Typograf(prefs) {
     this._prefs = typeof prefs === 'object' ? prefs : {};
     this._prefs.live = this._prefs.live || false;
 
+    this._locale = this._prepareLocale(this._prefs.locale);
+
     this._safeTags = new SafeTags();
 
     this._settings = {};
@@ -184,7 +186,7 @@ Typograf.prototype = {
 
         var that = this;
 
-        this._locale = prefs.locale || this._prefs.locale || 'common';
+        this._locale = this._prepareLocale(prefs.locale, this._prefs.locale);
 
         text = this._removeCR(text);
 
@@ -216,8 +218,8 @@ Typograf.prototype = {
 
         text = this._executeRules(text, 'end');
 
-        this._locale = null;
         this._isHTML = null;
+        this._locale = this._prepareLocale(this._prefs.locale);
 
         return this._fixLineEnding(text, prefs.lineEnding || this._prefs.lineEnding);
     },
@@ -303,12 +305,28 @@ Typograf.prototype = {
      * @return {*}
      */
     data: function(key) {
-        var locale = '';
+        var str = '';
         if (key.search('/') === -1) {
-            locale = (this._locale || this._prefs.locale) + '/';
-        }
+            if (key === 'char') {
+                this._locale.forEach(function(item) {
+                    str += Typograf.data(item + '/' + key);
+                }, this);
 
-        return Typograf.data(locale + key);
+                return str;
+            } else {
+                return Typograf.data(this._locale[0] + '/' + key);
+            }
+        } else {
+            return Typograf.data(key);
+        }
+    },
+    _prepareLocale: function(locale1, locale2) {
+        var locale = locale1 || locale2,
+            result = locale;
+
+        if (!Array.isArray(locale)) { result = [locale]; }
+
+        return result;
     },
     _executeRules: function(text, queue) {
         queue = queue || 'default';
@@ -334,7 +352,7 @@ Typograf.prototype = {
             return text;
         }
 
-        if ((rlocale === 'common' || rlocale === this._locale) && this.enabled(rule.name)) {
+        if ((rlocale === 'common' || rlocale === this._locale[0]) && this.enabled(rule.name)) {
             this._onBeforeRule && this._onBeforeRule(rule.name, text);
             text = rule.handler.call(this, text, this._settings[rule.name]);
             this._onAfterRule && this._onAfterRule(rule.name, text);

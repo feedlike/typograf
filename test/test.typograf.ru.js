@@ -222,5 +222,5 @@ const ruTests = [
     ]*/
 ];
 
-helpers.ruTests('typograf.ru', ruTests);
-helpers.ruDoubleTests('typograf.ru, double execute', ruTests);
+helpers.test('typograf.ru', ruTests, {locale: ['ru', 'en-US']});
+helpers.doubleTest('typograf.ru, double execute', ruTests, {locale: ['ru', 'en-US']});

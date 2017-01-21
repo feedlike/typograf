@@ -1,7 +1,7 @@
 Typograf.rule({
     name: 'common/punctuation/quote',
     handler: function(text, commonSettings) {
-        var locale = this._locale,
+        var locale = this._locale[0],
             localeSettings = commonSettings[locale];
 
         if (!localeSettings) { return text; }

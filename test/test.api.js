@@ -3,7 +3,7 @@
 const assert = require('chai').assert;
 const rules = require('../build/rules');
 const Typograf = require('../build/typograf');
-const t = new Typograf();
+const t = new Typograf({locale: 'en-US'});
 
 describe('API', function() {
     it('should disable rule', function() {
@@ -94,7 +94,7 @@ describe('API', function() {
     });
 
     it('should add safe tag', function() {
-        const t2 = new Typograf();
+        const t2 = new Typograf({locale: 'en-US'});
         t2.addSafeTag('<myTag>', '</myTag>');
 
         assert.equal(t2.execute('  <myTag>  Hello world!!  </myTag>  '), '<myTag>  Hello world!!  </myTag>');
@@ -115,7 +115,7 @@ describe('API', function() {
                 return text.replace(/inner_example/, '');
             }
         });
-        const t2 = new Typograf();
+        const t2 = new Typograf({locale: 'en-US'});
 
         assert.equal(t2.execute('rule abc inner_example'), 'abc');
     });
@@ -128,7 +128,7 @@ describe('API', function() {
     });
 
     it('should change line endings', function() {
-        var t = new Typograf({lineEnding: 'CRLF'});
+        var t = new Typograf({locale: 'en-US', lineEnding: 'CRLF'});
 
         assert.equal(t.execute('Line1\rLine2\rLine3'), 'Line1\r\nLine2\r\nLine3');
 

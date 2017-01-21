@@ -17,5 +17,5 @@ tests.push([
             '20\u00A0years'
         ]
     ],
-    {locale: 'ru'}
+    {locale: ['ru', 'en-US']}
 ]);

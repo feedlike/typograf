@@ -106,7 +106,7 @@ describe('rules, double execute', function() {
 
 describe('common specific tests', function() {
     function check(data) {
-        const tp = new Typograf({enable: data.enable});
+        const tp = new Typograf({locale: 'en-US', enable: data.enable});
 
         data.tests.forEach(function(item) {
             assert.equal(tp.execute(item[0]), item[1]);
@@ -190,7 +190,7 @@ describe('russian specific tests', function() {
     });
 
     it('ru/optalign', function() {
-        const tp = new Typograf({locale: 'ru'});
+        const tp = new Typograf({locale: ['ru', 'en-US']});
         tp.enable('ru/optalign/*');
 
         [

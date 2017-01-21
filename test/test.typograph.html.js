@@ -102,5 +102,5 @@ const ruTests = [
     ]
 ];
 
-helpers.ruTests('typograph html', ruTests);
-helpers.ruDoubleTests('typograph html, double execute', ruTests);
+helpers.test('typograph html', ruTests, {locale: ['ru', 'en-US']});
+helpers.doubleTest('typograph html, double execute', ruTests, {locale: ['ru', 'en-US']});

@@ -61,5 +61,5 @@ const dwTests = [
     ]*/
 ];
 
-helpers.ruTests('docuwiki', dwTests);
-helpers.ruDoubleTests('docuwiki, double execute', dwTests);
+helpers.test('docuwiki', dwTests);
+helpers.doubleTest('docuwiki, double execute', dwTests);
