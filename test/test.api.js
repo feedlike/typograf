@@ -120,6 +120,20 @@ describe('API', function() {
         assert.equal(t2.execute('rule abc inner_example'), 'abc');
     });
 
+    it('should throw error without locale', function() {
+        assert.throws(function() {
+            const t = new Typograf();
+            const result = t.execute('text');
+        }, Error, /Not defined/);
+    });
+
+    it('should throw error with unknown locale', function() {
+        assert.throws(function() {
+            const t = new Typograf();
+            const result = t.execute('text', {locale: 'unknow'});
+        }, Error, /not supported/);
+    });
+
     it('should remove CR', function() {
         assert.equal(t.execute('Line1\nLine2\nLine3'), 'Line1\nLine2\nLine3');
         assert.equal(t.execute('Line1\r\nLine2\r\nLine3'), 'Line1\nLine2\nLine3');

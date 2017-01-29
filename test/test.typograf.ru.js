@@ -222,5 +222,4 @@ const ruTests = [
     ]*/
 ];
 
-helpers.test('typograf.ru', ruTests, {locale: ['ru', 'en-US']});
 helpers.doubleTest('typograf.ru, double execute', ruTests, {locale: ['ru', 'en-US']});

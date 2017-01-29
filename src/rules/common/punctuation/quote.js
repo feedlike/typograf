@@ -13,9 +13,9 @@ Typograf.rule({
         text = this._setQuotes(text, localeSettings);
         if (localeSettings.removeDuplicateQuotes && lquote === lquote2) {
             text = text
-                // ««Энергия» Синергия» -> «Энергия» Синергия»
+                // ««word» word» -> «word» word»
                 .replace(new RegExp(lquote + lquote, 'g'), lquote)
-                // «Энергия «Синергия»» -> «Энергия «Синергия»
+                // «word «word»» -> «word «word»
                 .replace(new RegExp(rquote + rquote, 'g'), rquote);
         }
 
@@ -33,43 +33,35 @@ Typograf.rule({
 });
 
 Typograf.prototype._setQuotes = function(text, settings) {
-    var ch = this.data('char'),
-        CH = ch.toUpperCase(),
-        letters = ch + '\u0301\\d',
-        privateLabel = Typograf._privateLabel,
+    var privateLabel = Typograf._privateLabel,
         lquote = settings.left[0],
         rquote = settings.right[0],
         lquote2 = settings.left[1] || lquote,
         quotes = '[' + Typograf.data('common/quote') + ']',
-        phrase = '[' + letters + ')!?.:;#*,…]*?',
-        reL = new RegExp('"([' + letters + '])', 'gi'),
-        reR = new RegExp('(' + phrase + ')"(' + phrase + ')', 'gi'),
+        reL = new RegExp('(^|[\\s[(])("{1,3})(?=\\S)', 'gim'),
+        reR = new RegExp('(\\S)("{1,3})(?=[!?.:;#*,…)\\s' + privateLabel + ']|$)', 'gim'),
         reQuotes = new RegExp(quotes, 'g'),
-        reFirstQuote = new RegExp('^(\\s)?(' + quotes + ')', 'g'),
-        reOpeningTag = new RegExp('(^|\\s)' + quotes + privateLabel, 'g'),
-        reClosingTag = new RegExp(privateLabel + quotes + '([\\s!?.:;#*,]|$)', 'g'),
-        count = 0,
-        symbols = ch + CH + '\\d';
+        reClosingTag = new RegExp('(' + privateLabel + ')"(?=[^\\s' + privateLabel + ']|$)', 'gm'),
+        count = 0;
 
     text = text
         // Hide incorrect quotes.
-        .replace(new RegExp('([' + symbols + '])"(?=[' + symbols + '])', 'g'), '$1' + Typograf._privateQuote)
         .replace(reQuotes, function() {
             count++;
             return '"';
         })
-        .replace(reL, lquote + '$1') // Opening quote
-        .replace(reR, '$1' + rquote + '$2') // Closing quote
-        .replace(reOpeningTag, '$1' + lquote + privateLabel) // Opening quote and tag
-        .replace(reClosingTag, privateLabel + rquote + '$1') // Tag and closing quote
-        .replace(reFirstQuote, '$1' + lquote);
+        // Opening quote
+        .replace(reL, function($0, $1, $2) { return $1 + Typograf._repeat(lquote, $2.length); })
+        // Closing quote
+        .replace(reR, function($0, $1, $2) { return $1 + Typograf._repeat(rquote, $2.length); })
+        // Tag and closing quote
+        .replace(reClosingTag, '$1' + rquote);
 
-    if (lquote !== lquote2 && count % 2 === 0) {
+    if (lquote !== lquote2 && (count % 2) === 0) {
         text = this._setInnerQuotes(text, settings);
     }
 
-    // Restore incorrect quotes.
-    return text.replace(new RegExp(Typograf._privateQuote, 'g'), '"');
+    return text;
 };
 
 Typograf.prototype._setInnerQuotes = function(text, settings) {
@@ -84,7 +76,6 @@ Typograf.prototype._setInnerQuotes = function(text, settings) {
     var lquote = settings.left[0],
         rquote = settings.right[0],
         bufText = new Array(text.length),
-        privateQuote = Typograf._privateQuote,
         minLevel = -1,
         maxLevel = leftQuotes.length - 1,
         level = minLevel;
@@ -110,7 +101,7 @@ Typograf.prototype._setInnerQuotes = function(text, settings) {
                 }
             }
         } else {
-            if (letter === privateQuote) {
+            if (letter === '"') {
                 level = minLevel;
             }
 

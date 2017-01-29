@@ -11,7 +11,7 @@ Typograf.getLocales = function() {
 };
 
 Typograf.hasLocale = function(locale) {
-    return Typograf._locales.indexOf(locale) !== -1;
+    return locale === 'common' || Typograf._locales.indexOf(locale) !== -1;
 };
 
 Typograf._locales = [];

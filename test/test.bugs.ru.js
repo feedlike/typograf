@@ -16,5 +16,4 @@ const tests = [
     ]
 ];
 
-helpers.test('github bugs', tests, { locale: ['ru', 'en-US'] });
 helpers.doubleTest('github bugs, double execute', tests, { locale: ['ru', 'en-US'] });

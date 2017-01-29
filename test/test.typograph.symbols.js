@@ -114,5 +114,4 @@ const ruTests = [
     ]
 ];
 
-helpers.test('typograph symbols', ruTests, {locale: ['ru', 'en-US']});
 helpers.doubleTest('typograph symbols, double execute', ruTests, {locale: ['ru', 'en-US']});

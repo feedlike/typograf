@@ -8,36 +8,6 @@ const Typograf = require('../build/typograf');
 const locale = 'ru';
 const t = new Typograf({locale: locale});
 
-let tmpSettings;
-
-function pushSettings(ruleName, settings) {
-    tmpSettings = {};
-
-    Object.keys(settings).forEach(function(key) {
-        tmpSettings[key] = t.setting(ruleName, key);
-        t.setting(ruleName, key, settings[key]);
-    });
-}
-
-function popSettings(ruleName) {
-    Object.keys(tmpSettings).forEach(function(key) {
-        t.setting(ruleName, key, tmpSettings[key]);
-    });
-}
-
-function executeRule(name, text, props) {
-    const rules = t._rules;
-
-    t._locale = getLocale(name, props);
-    rules.forEach(function(f) {
-        if (f.name === name) {
-            text = f.handler.call(t, text, t._settings[f.name]);
-        }
-    });
-
-    return text;
-}
-
 function executeInnerRule(name, text) {
     const rules = t._innerRules;
 
@@ -144,6 +114,8 @@ describe('common specific tests', function() {
 
 describe('russian specific tests', function() {
     it('quotes lquote = lquote2 and rquote = rquote2', function() {
+        const name = 'common/punctuation/quote';
+        const tp = new Typograf({locale: 'ru', disable: '*', enable: name});
         const quoteTests = [
             [
                 '"Триллер “Закрытая школа” на СТС"',
@@ -171,22 +143,16 @@ describe('russian specific tests', function() {
             ]
         ];
 
-        const name = 'common/punctuation/quote';
-
-        pushSettings(name, {
-            ru: {
-                left: '«',
-                right: '»',
-                removeDuplicateQuotes: true
-            }
+        tp.setting(name, 'ru', {
+            left: '«',
+            right: '»',
+            removeDuplicateQuotes: true
         });
 
         quoteTests.forEach(function(item) {
             const [before, after] = item;
-            assert.equal(executeRule(name, before, {locale: 'ru'}), after);
+            assert.equal(tp.execute(before), after);
         });
-
-         popSettings(name);
     });
 
     it('ru/optalign', function() {

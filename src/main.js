@@ -158,12 +158,27 @@ Typograf._replace = function(text, re) {
     return text;
 };
 
+Typograf._repeat = function(symbol, count) {
+    var result = '';
+    for (;;) {
+        if ((count & 1) === 1) {
+            result += symbol;
+        }
+        count >>>= 1;
+        if (count === 0) {
+            break;
+        }
+        symbol += symbol;
+    }
+
+    return result;
+};
+
 Typograf._replaceNbsp = function(text) {
     return text.replace(/\u00A0/g, ' ');
 };
 
 Typograf._privateLabel = '\uDBFF';
-Typograf._privateQuote = '\uDBFE';
 
 Typograf.prototype = {
     constructor: Typograf,
@@ -187,6 +202,14 @@ Typograf.prototype = {
         var that = this;
 
         this._locale = this._prepareLocale(prefs.locale, this._prefs.locale);
+
+        if (!this._locale.length || !this._locale[0]) {
+            throw Error('Not defined the property "locale".');
+        }
+
+        if (!Typograf.hasLocale(this._locale[0])) {
+            throw Error('"' + this._locale[0] + '" is not supported locale.');
+        }
 
         text = this._removeCR(text);
 

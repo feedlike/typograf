@@ -61,5 +61,4 @@ const dwTests = [
     ]*/
 ];
 
-helpers.test('docuwiki', dwTests);
 helpers.doubleTest('docuwiki, double execute', dwTests);

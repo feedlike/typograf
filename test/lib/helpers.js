@@ -34,7 +34,10 @@ module.exports = {
 
                     const tp = new Typograf(prefs);
                     const result = tp.execute(before, prefs);
-                    assert.equal(tp.execute(result), after);
+                    assert.equal(result, after, 'first step');
+
+                    const result2 = tp.execute(result, prefs);
+                    assert.equal(result2, after, 'second step');
                 });
             });
         });
