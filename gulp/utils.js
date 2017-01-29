@@ -8,6 +8,7 @@ const queue = {
     'entity': 5,
     'end': 10
 };
+const langs = ['ru', 'en-US'];
 
 module.exports = {
     buildTitles() {
@@ -41,7 +42,7 @@ module.exports = {
         }
         
         function buildDoc(prefix) {
-            Typograf._locales.forEach(function(locale) {
+            langs.forEach(function(locale) {
                 let text = '';
 
                 rules.forEach(function(rule, i) {
